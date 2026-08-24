@@ -9,6 +9,9 @@ class Application{
         "5) Back to Main Menu",
         "6) Exit"
     };
+
+    static String [] customers = new String[10]; // save customer names
+    static  int customerPointer = 0; // pointer to keep track of the number of customers saved    
     public static void printWelcomeNote(){
         System.out.println("===================================");
         System.out.println("Hello Welcome to CLI POS");
@@ -39,6 +42,8 @@ class Application{
 
             switch(num){
                 case 1:
+                    saveCustomer();
+                    break;
                 case 2:
                 case 3:
                 case 4:
@@ -49,6 +54,17 @@ class Application{
             }
         }
 
+    }
+
+    public static void saveCustomer(){
+        System.out.println("Enter Customer Name: ");
+        if (customers[9]== null){
+            customers[customerPointer] = input.next();
+            customerPointer++;
+            System.out.println("Customer Saved Successfully.");
+        }else{
+            System.out.println("Customer List is Full.");
+        }
     }
 
     public static void manageProduct(){
