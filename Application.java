@@ -10,8 +10,19 @@ class Application{
         "6) Exit"
     };
 
+    static String [] productQuestions = {
+        "1) Save Product",
+        "2) Update Product",
+        "3) Delete Product",
+        "4) Search Product",
+        "5) Back to Main Menu",
+        "6) Exit"
+    };
+
     static String [] customers = new String[100]; // save customer names
-    static  int customerPointer = 0; // pointer to keep track of the number of customers saved    
+    static String [] products = new String[100]; // save product names
+    static  int customerPointer = 0; // pointer to keep track of the number of customers saved
+    static  int productPointer = 0; // pointer to keep track of the number of products saved
     public static void printWelcomeNote(){
         System.out.println("===================================");
         System.out.println("Hello Welcome to CLI POS");
@@ -121,9 +132,91 @@ class Application{
 
     // Product Management Section
     public static void manageProduct(){
-        
+        System.out.println("Manage your Product Informations");
+        System.out.println("===================================");
+
+        while(true){
+            for(String temp : productQuestions){
+                System.out.println(temp);
+            }
+            System.out.print("Enter your choice: ");
+            int num = input.nextInt();
+            input.nextLine(); // consume the newline character
+
+            switch(num){
+                case 1:
+                    saveProduct();
+                    break;
+                case 2:
+                    updateProduct();
+                    break;
+                case 3:
+                    deleteProduct();   
+                    break;
+                case 4:
+                    searchProduct();
+                    break;
+                case 5:
+                    return; // Back to Main Menu    
+                case 6:
+                    exit();
+                default:
+                    System.out.println("Invalid Option. Please try again.");
+            }
+        }
     }
 
+    public static void saveProduct(){
+        System.out.println("Enter the Product Name "+(productPointer+1)+": ");
+        if (products[99]==null){
+            products[productPointer] = input.nextLine();
+            System.out.println("Product " + products[productPointer]+ " Saved Successfully.");
+            productPointer++;
+        }else{
+            System.out.println("Product List is Full.");
+        }
+    }
+
+    public static void updateProduct(){
+        System.out.println("Enter the Product ID: ");
+        int productIndex = input.nextInt();
+        input.nextLine(); // consume the newline character
+        productIndex--; // Adjust for 0-based index
+        if(productIndex >=0 && productIndex < products.length && products[productIndex]!=null){
+            System.out.println("Product found and name is: "+products[productIndex]);
+            System.out.print("Please Enter the new name: ");
+            String tempName = input.nextLine();
+            products[productIndex] = tempName;
+            System.out.println("Product name updated successfully.");
+        }else{
+            System.out.println("Product not found.");
+        }
+    }
+
+    public static void deleteProduct(){
+        System.out.println("Enter the Product Index to delete: ");
+        int productIndex = input.nextInt();
+        input.nextLine(); // consume the newline character
+        productIndex--; // Adjust for 0-based index
+        if(products[productIndex]!=null){
+            products[productIndex] = null;
+            System.out.println("Product deleted successfully.");
+        }else{
+            System.out.println("Product not found.");
+        }
+    }
+
+    public static void searchProduct(){
+        System.out.println("Enter text to search: ");
+        String searchText = input.nextLine();
+        for(String product:products){
+            if(product!=null && product.contains(searchText)){
+                System.out.println("Product found: "+searchText);
+            }else{
+                System.out.println("Product not found.");
+            }
+        }
+    }
 
     // Order Management Section
     public static void manageOrder(){
