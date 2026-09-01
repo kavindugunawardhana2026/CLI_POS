@@ -70,6 +70,7 @@ class Application {
             for (String temp : customerQuestions) {
                 System.out.println(temp);
             }
+            System.out.print("Enter your choice: ");
             int num = input.nextInt();
             input.nextLine(); // consume the newline character
 
@@ -84,25 +85,29 @@ class Application {
                     deleteCustomer();
                     break;
                 case 4:
+                    searchCustomer();
+                    break;
                 case 5:
+                    return; // Back to Main Menu
                 case 6:
+                    exit();
+                    break;
                 default:
-
+                    System.out.println("Invalid Option. Please try again.");
             }
         }
 
     }
 
     public static void saveCustomer() {
-        System.out.print("Enter Customer Name " + (customerPointer + 1) + ": ");
-        if (customers[99] == null) {
-            customers[customerPointer] = input.nextLine();
-            System.out.println("Customer " + customers[customerPointer] + " Saved Successfully.");
-            customerPointer++;
-
-        } else {
+        if (customerPointer >= customers.length) {
             System.out.println("Customer List is Full.");
+            return;
         }
+        System.out.print("Enter Customer Name " + (customerPointer + 1) + ": ");
+        customers[customerPointer] = input.nextLine();
+        System.out.println("Customer " + customers[customerPointer] + " Saved Successfully.");
+        customerPointer++;
     }
 
     public static void updateCustomer() {
@@ -111,18 +116,16 @@ class Application {
         customerIndex--; // Adjust for 0-based index
         input.nextLine(); // consume the newline character
 
-        String customerName = customers[customerIndex];
-        if (customerName != null) {
-            System.out.println("Customer found and name is: " + customerName);
-            System.out.print("Please Enter the new name: ");
-
-            String tempName = input.nextLine();
-            customers[customerIndex] = tempName;
-            System.out.println("Customer name updated successfully.");
-        } else {
+        if (customerIndex < 0 || customerIndex >= customers.length || customers[customerIndex] == null) {
             System.out.println("Customer not found.");
+            return;
         }
 
+        System.out.println("Customer found and name is: " + customers[customerIndex]);
+        System.out.print("Please Enter the new name: ");
+        String tempName = input.nextLine();
+        customers[customerIndex] = tempName;
+        System.out.println("Customer name updated successfully.");
     }
 
     public static void deleteCustomer() {
@@ -130,33 +133,44 @@ class Application {
         int customerIndex = input.nextInt();
         customerIndex--; // Adjust for 0-based index
         input.nextLine();
-        if (customers[customerIndex] != null) {
-            customers[customerIndex] = null;
-            System.out.println("Customer deleted successfully.");
-        } else {
+
+        if (customerIndex < 0 || customerIndex >= customers.length || customers[customerIndex] == null) {
             System.out.println("Customer not found.");
+            return;
         }
+
+        customers[customerIndex] = null;
+        System.out.println("Customer deleted successfully.");
     }
 
     public static void searchCustomer() {
         System.out.print("Please Enter the Search Text: ");
         String searchText = input.nextLine();
+        boolean found = false;
         for (String tempName : customers) {
             if (tempName != null && tempName.contains(searchText)) {
                 System.out.println("Customer found: " + tempName);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No matching customer found.");
+        }
+    }
+
+    public static void loadAllCustomer() {
+        for (int i = 0; i < customerPointer; i++) {
+            if (customers[i] != null) {
+                System.out.println((i + 1) + ") " + customers[i]);
             }
         }
     }
 
-    public static void loadAllCustomer(){
-        for(String tempName : customers){
-            System.out.println(tempName);
-        }
-    }
-
-    public static void loadAllProducts(){
-        for(String tempName : products){
-            System.out.println(tempName);
+    public static void loadAllProducts() {
+        for (int i = 0; i < productPointer; i++) {
+            if (products[i] != null) {
+                System.out.println((i + 1) + ") " + products[i]);
+            }
         }
     }
 
@@ -190,6 +204,7 @@ class Application {
                     return; // Back to Main Menu
                 case 6:
                     exit();
+                    break;
                 default:
                     System.out.println("Invalid Option. Please try again.");
             }
@@ -197,149 +212,160 @@ class Application {
     }
 
     public static void saveProduct() {
-        System.out.print("Enter the Product Name " + (productPointer + 1) + ": ");
-        if (products[99] == null) {
-            products[productPointer] = input.nextLine();
-            System.out.print("Enter product price: ");
-            double price = input.nextDouble();
-            input.nextLine(); // consume the newline character
-            productPrices[productPointer] = price;
-
-            System.out.print("Enter product QTY: ");
-            int qty = input.nextInt();
-            input.nextLine(); // consume the newline character
-            productStocks[productPointer] = qty;
-
-            System.out.println("Product " + products[productPointer] + " Saved Successfully.");
-            productPointer++;
-        } else {
+        if (productPointer >= products.length) {
             System.out.println("Product List is Full.");
+            return;
         }
+        System.out.print("Enter the Product Name " + (productPointer + 1) + ": ");
+        products[productPointer] = input.nextLine();
+
+        System.out.print("Enter product price: ");
+        double price = input.nextDouble();
+        input.nextLine(); // consume the newline character
+        productPrices[productPointer] = price;
+
+        System.out.print("Enter product QTY: ");
+        int qty = input.nextInt();
+        input.nextLine(); // consume the newline character
+        productStocks[productPointer] = qty;
+
+        System.out.println("Product " + products[productPointer] + " Saved Successfully.");
+        productPointer++;
     }
 
     public static void updateProduct() {
-        System.out.println("Enter the Product ID: ");
+        System.out.print("Enter the Product ID: ");
         int productIndex = input.nextInt();
         input.nextLine(); // consume the newline character
         productIndex--; // Adjust for 0-based index
-        if (productIndex >= 0 && productIndex < products.length && products[productIndex] != null) {
-            System.out.println("Product found and name is: " + products[productIndex]);
-            System.out.print("Please Enter the new name: ");
-            String tempName = input.nextLine();
-            products[productIndex] = tempName;
-            System.out.println("Product name updated successfully.");
-        } else {
+
+        if (productIndex < 0 || productIndex >= products.length || products[productIndex] == null) {
             System.out.println("Product not found.");
+            return;
         }
+
+        System.out.println("Product found and name is: " + products[productIndex]);
+        System.out.print("Please Enter the new name: ");
+        String tempName = input.nextLine();
+        products[productIndex] = tempName;
+        System.out.println("Product name updated successfully.");
     }
 
     public static void deleteProduct() {
-        System.out.println("Enter the Product Index to delete: ");
+        System.out.print("Enter the Product Index to delete: ");
         int productIndex = input.nextInt();
         input.nextLine(); // consume the newline character
         productIndex--; // Adjust for 0-based index
-        if (products[productIndex] != null) {
-            products[productIndex] = null;
-            System.out.println("Product deleted successfully.");
-        } else {
+
+        if (productIndex < 0 || productIndex >= products.length || products[productIndex] == null) {
             System.out.println("Product not found.");
+            return;
         }
+
+        products[productIndex] = null;
+        System.out.println("Product deleted successfully.");
     }
 
     public static void searchProduct() {
-        System.out.println("Enter text to search: ");
+        System.out.print("Enter text to search: ");
         String searchText = input.nextLine();
+        boolean found = false;
         for (String product : products) {
             if (product != null && product.contains(searchText)) {
-                System.out.println("Product found: " + searchText);
-            } else {
-                System.out.println("Product not found.");
+                System.out.println("Product found: " + product);
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("Product not found.");
         }
     }
 
     // Order Management Section
-    public static void placeOrder(){
+    public static void placeOrder() {
         loadAllCustomer();
         System.out.print("Enter customer ID: ");
-        int cIdx = input.nextInt()-1;
+        int cIdx = input.nextInt() - 1;
         input.nextLine();
 
-        if(cIdx<0 || cIdx >= customerPointer || customers[cIdx]==null){
+        if (cIdx < 0 || cIdx >= customerPointer || customers[cIdx] == null) {
             System.out.println("Customer not found");
             return;
         }
 
         loadAllProducts();
         System.out.print("Enter product ID: ");
-        int pIdx = input.nextInt()-1;
+        int pIdx = input.nextInt() - 1;
         input.nextLine();
 
-        if(pIdx<0 || pIdx >= productPointer || customers[pIdx]==null){
+        if (pIdx < 0 || pIdx >= productPointer || products[pIdx] == null) {
             System.out.println("Product not found");
             return;
         }
         System.out.print("Enter quantity: ");
         int qty = input.nextInt();
         input.nextLine();
-        if(qty<=0){
+        if (qty <= 0) {
             System.out.println("Invalid quantity");
             return;
         }
 
-        if(productStocks[pIdx]<qty){
+        if (productStocks[pIdx] < qty) {
             System.out.println("Not enough stock");
             return;
         }
 
-        double totalPrice = productPrices[pIdx]*qty;
-        productStocks[pIdx]-=qty;
+        if (orderCounter >= orders.length) {
+            System.out.println("Order list is full");
+            return;
+        }
+
+        double totalPrice = productPrices[pIdx] * qty;
+        productStocks[pIdx] -= qty;
         String orderSummery = String.format(
-            "Order#%d | Customer: %s | Product: %s | QTY: %d | Total: LKR%.2f",
-            (orderCounter+1),
-            customers[cIdx],
-            products[pIdx], 
-            qty,
-            totalPrice
+                "Order#%d | Customer: %s | Product: %s | QTY: %d | Total: LKR%.2f",
+                (orderCounter + 1),
+                customers[cIdx],
+                products[pIdx],
+                qty,
+                totalPrice
         );
 
-        orders[orderCounter]=orderSummery;
+        orders[orderCounter] = orderSummery;
         orderCounter++;
         System.out.println("Order placed successfully");
     }
 
-    public static void viewAllOrders(){
+    public static void viewAllOrders() {
         System.out.println("--------------All Orders--------------");
-        if(orderCounter==0){
+        if (orderCounter == 0) {
             System.out.println("No orders found");
             return;
         }
         boolean any = false;
-        for(int i=0;i<orderCounter;i++){
-            if(orders[i]!=null){
+        for (int i = 0; i < orderCounter; i++) {
+            if (orders[i] != null) {
                 any = true;
                 System.out.println(orders[i]);
             }
         }
-        if(!any){
+        if (!any) {
             System.out.println("No orders found");
         }
     }
 
-    public static void deleteOrder(){
+    public static void deleteOrder() {
         viewAllOrders();
         System.out.print("Enter order ID to delete: ");
-        int oIdx = input.nextInt()-1;
+        int oIdx = input.nextInt() - 1;
         input.nextLine();
-        if(oIdx<0 || oIdx >= orderCounter || orders[oIdx]==null){
+        if (oIdx < 0 || oIdx >= orderCounter || orders[oIdx] == null) {
             System.out.println("Order not found");
             return;
         }
-        orders[oIdx]=null;
+        orders[oIdx] = null;
         System.out.println("Order deleted successfully");
     }
-
-    
 
     public static void manageOrder() {
         while (true) {
@@ -349,7 +375,7 @@ class Application {
             for (String q : orderQuestions) {
                 System.out.println(q);
             }
-            System.out.println("Choice: ");
+            System.out.print("Choice: ");
             int num = input.nextInt();
             input.nextLine();
             switch (num) {
@@ -368,8 +394,7 @@ class Application {
                     exit();
                     break;
                 default:
-                    System.out.print("Invalid choice, try again");
-
+                    System.out.println("Invalid choice, try again");
             }
         }
     }
@@ -387,6 +412,7 @@ class Application {
             printPrimaryQuestions();
 
             int num = input.nextInt();
+            input.nextLine(); // consume the newline character
 
             switch (num) {
                 case 1:
@@ -403,6 +429,7 @@ class Application {
 
                 case 4:
                     exit();
+                    break;
 
                 default:
                     System.out.println("Invalid Option. Please try again.");
